@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Administración</title>
+</head>
+<body>
+  <h1>Panel de Administración (Solo ADMIN)</h1>
+  <table border="1" cellpadding="5">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Email</th>
+        <th>Rol</th>
+        <th>Activo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="u : ${usuarios}">
+        <td th:text="${u.id}"></td>
+        <td th:text="${u.nombre}"></td>
+        <td th:text="${u.email}"></td>
+        <td th:text="${u.rol}"></td>
+        <td th:text="${u.activo}"></td>
+      </tr>
+    </tbody>
+  </table>
+  <br/>
+  <a th:href="@{/dashboard}">Volver al Dashboard</a>
+</body>
+</html>

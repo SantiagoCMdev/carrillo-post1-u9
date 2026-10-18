@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+</head>
+<body>
+  <h1>Dashboard</h1>
+
+  <!-- SEGURO (versión final que queda en el commit): th:text escapa el
+       contenido. Si usuario.nombre es "<script>alert(1)</script>",
+       Thymeleaf lo renderiza como &lt;script&gt;alert(1)&lt;/script&gt;
+       y el navegador lo muestra como texto plano, sin ejecutarlo. -->
+  <p>Bienvenido, <span th:text="${usuario}"></span> (<span th:text="${email}"></span>)</p>
+
+  <!-- INSEGURO - SOLO PARA LA PRUEBA DEL PASO 8, luego se revierte:-->
+  <!-- <p th:utext="${usuario}"></p> -->
+  <!--Con th:utext, el mismo valor se inserta como HTML sin escapar: si
+  usuario contiene <script>alert(1)</script>, el navegador SÍ lo
+  ejecuta. Esta es la línea que el estudiante activa temporalmente
+  para el Checkpoint 2 y luego elimina o vuelve a comentar. -->
+
+  <hr/>
+
+  <!-- Buscador de tareas para verificar mitigación de SQL Injection -->
+  <h2>Mis Tareas</h2>
+  <form th:action="@{/dashboard}" method="get">
+    <label>Buscar por título: 
+      <input type="text" name="buscar" th:value="${terminoBusqueda}" placeholder="Ej: estudiar" />
+    </label>
+    <button type="submit">Buscar</button>
+    <a th:href="@{/dashboard}">Limpiar</a>
+  </form>
+
+  <ul>
+    <li th:each="t : ${tareas}">
+      <strong th:text="${t.titulo}"></strong> - <span th:text="${t.descripcion}"></span>
+    </li>
+    <li th:if="${#lists.isEmpty(tareas)}">No se encontraron tareas.</li>
+  </ul>
+
+  <h3>Crear Nueva Tarea</h3>
+  <form th:action="@{/tareas/nueva}" method="post">
+    <label>Título: <input type="text" name="titulo" required /></label>
+    <label>Descripción: <input type="text" name="descripcion" /></label>
+    <button type="submit">Guardar Tarea</button>
+  </form>
+
+  <hr/>
+
+  <!-- Solo visible para ADMIN -->
+  <div sec:authorize="hasRole('ADMIN')">
+    <a th:href="@{/admin}">Ir al Panel de Administración</a>
+    <br/><br/>
+  </div>
+
+  <form th:action="@{/logout}" method="post">
+    <button type="submit">Cerrar Sesión</button>
+  </form>
+</body>
+</html>
